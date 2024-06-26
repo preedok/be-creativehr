@@ -1,4 +1,4 @@
-const model = require("../models/buku.models");
+const model = require("../models/modul.models");
 const jwt = require("jsonwebtoken");
 const cloudinary = require("cloudinary").v2;
 

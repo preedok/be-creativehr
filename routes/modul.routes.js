@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const bukuController = require("../controller/buku.controller");
+const bukuController = require("../controller/modul.controller");
 const middleware = require("../middleware/jwt.middleware");
 
 // get all data

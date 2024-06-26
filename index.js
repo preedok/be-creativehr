@@ -27,12 +27,12 @@ app.use(
 );
 
 const profileRoutes = require("./routes/profile.routes");
-const bukuRoutes = require("./routes/buku.routes");
+const modulRoutes = require("./routes/modul.routes");
 const authUser = require("./routes/auth.routes");
 const kegiatanRoutes = require("./routes/kegiatan.routes");
 
 app.use(profileRoutes);
-app.use(bukuRoutes);
+app.use(modulRoutes);
 app.use(authUser);
 app.use(kegiatanRoutes);
 
