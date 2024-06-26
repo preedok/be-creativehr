@@ -1,4 +1,4 @@
-const model = require("../models/profile.models");
+const model = require("../models/users.models");
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
 
@@ -13,9 +13,9 @@ const cloudinary = require("cloudinary").v2;
 //   return token;
 // }
 
-async function getProfile(req, res) {
+async function getUsers(req, res) {
   try {
-    const data = await model.getAllUser();
+    const data = await model.getAllUsers();
     res.send({
       status: true,
       message: "Success get data",
@@ -30,7 +30,7 @@ async function getProfile(req, res) {
   }
 }
 
-async function getProfileById(req, res) {
+async function getUsersById(req, res) {
   try {
     const {
       params: { id },
@@ -44,7 +44,7 @@ async function getProfileById(req, res) {
       return;
     }
 
-    const query = await model.getProfileById(id);
+    const query = await model.getUsersById(id);
 
     if (!query.length) {
       res.status(404).json({
@@ -67,7 +67,7 @@ async function getProfileById(req, res) {
   }
 }
 
-async function getProfileByEmail(req, res) {
+async function getUsersByEmail(req, res) {
   try {
     const {
       params: { id },
@@ -81,7 +81,7 @@ async function getProfileByEmail(req, res) {
       return;
     }
 
-    const query = await model.getProfileByEmail(email);
+    const query = await model.getUsersByEmail(email);
 
     if (!query.length) {
       res.status(404).json({
@@ -116,7 +116,7 @@ async function addUsers(req, res) {
       return;
     }
     // check if email already exists in the database
-    const emailExists = await model.getProfileByEmail(email);
+    const emailExists = await model.getUsersByEmail(email);
     if (emailExists.length > 0) {
       res.status(400).json({
         status: false,
@@ -182,7 +182,7 @@ async function editUsers(req, res) {
       },
     } = req;
 
-    const checkData = await model.getProfileById(userId);
+    const checkData = await model.getUsersById(userId);
 
     if (!checkData.length) {
       res.status(404).json({
@@ -215,7 +215,7 @@ async function editUsers(req, res) {
       bcrypt.genSalt(saltRounds, async function (err, salt) {
         try {
           const hash = await bcrypt.hash(password, salt);
-          query = await model.editProfile({ ...payload, password: hash }, userId);
+          query = await model.editUsers({ ...payload, password: hash }, userId);
           res.send({
             status: true,
             message: "Success edit data",
@@ -229,7 +229,7 @@ async function editUsers(req, res) {
         }
       });
     } else {
-      query = await model.editProfile(payload, userId);
+      query = await model.editUsers(payload, userId);
       res.send({
         status: true,
         message: "Success edit data",
@@ -256,7 +256,7 @@ async function deleteUsers(req, res) {
       return;
     }
 
-    const checkData = await model.getProfileById(id);
+    const checkData = await model.getUsersById(id);
     if (!checkData.length) {
       res.status(404).json({
         status: false,
@@ -265,7 +265,7 @@ async function deleteUsers(req, res) {
       return;
     }
 
-    const query = await model.deleteProfile(id);
+    const query = await model.deleteUsers(id);
 
     res.send({
       status: true,
@@ -281,7 +281,7 @@ async function deleteUsers(req, res) {
   }
 }
 
-async function editPhoto(req, res) {
+async function editUsersPhoto(req, res) {
   try {
     const { id } = req.params; 
     console.log("User ID:", id);
@@ -330,7 +330,7 @@ async function editPhoto(req, res) {
           photo: data?.secure_url,
         };
 
-        await model.editPhotoUser(payload, parseInt(id));
+        await model.editPhotoUsers(payload, parseInt(id));
 
         res.status(200).send({
           status: true,
@@ -355,11 +355,11 @@ async function editPhoto(req, res) {
 
 
 module.exports = {
-  getProfile,
-  getProfileById,
-  getProfileByEmail,
+  getUsers,
+  getUsersById,
+  getUsersByEmail,
   editUsers,
   deleteUsers,
-  editPhoto,
+  editUsersPhoto,
   addUsers
 };

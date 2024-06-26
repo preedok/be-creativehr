@@ -22,7 +22,7 @@ const register = async (payload) => {
     }
 };
 
-const getProfileByUsername = async (username) => {
+const getUsersByUsername = async (username) => {
     try {
         const query = await db`SELECT * FROM public."users" WHERE LOWER(username) = LOWER(${username})`;
         return query;
@@ -32,5 +32,5 @@ const getProfileByUsername = async (username) => {
 };
 module.exports = {
     register,
-    getProfileByUsername
+    getUsersByUsername
 };

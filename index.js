@@ -20,7 +20,7 @@ app.use(
   })
 );
 
-const profileRoutes = require("./routes/profile.routes");
+const profileRoutes = require("./routes/users.routes");
 const modulRoutes = require("./routes/modul.routes");
 const authUser = require("./routes/auth.routes");
 const kegiatanRoutes = require("./routes/kegiatan.routes");

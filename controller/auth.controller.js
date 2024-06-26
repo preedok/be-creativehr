@@ -57,7 +57,7 @@ const jwt = require("jsonwebtoken");
 //   }
 // }
 
-async function loginUserByUsername(req, res) {
+async function loginUsersByUsername(req, res) {
   try {
     const {
       body: { username, password },
@@ -69,7 +69,7 @@ async function loginUserByUsername(req, res) {
       });
       return;
     }
-    const checkUser = await models.getProfileByUsername(username);
+    const checkUser = await models.getUsersByUsername(username);
     if (!checkUser?.length) {
       res.status(400).json({
         status: false,
@@ -135,6 +135,6 @@ async function registerUsers(req, res) {
 }
 
 module.exports = {
-  loginUserByUsername,
+  loginUsersByUsername,
   registerUsers
 };

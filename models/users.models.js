@@ -1,6 +1,6 @@
 const db = require("../connection");
 
-const getAllUser = async () => {
+const getAllUsers = async () => {
   try {
     const query = db`SELECT * FROM public."users"`;
     return query;
@@ -9,7 +9,7 @@ const getAllUser = async () => {
   }
 };
 
-const getProfileById = async (id) => {
+const getUsersById = async (id) => {
   try {
     const query = await db`SELECT * FROM public."users" WHERE id = ${id}`;
     return query;
@@ -18,7 +18,7 @@ const getProfileById = async (id) => {
   }
 };
 
-const getProfileByEmail = async (email) => {
+const getUsersByEmail = async (email) => {
   try {
     const query =
       await db`SELECT * FROM public."users" WHERE LOWER(email) = LOWER(${email})`;
@@ -28,7 +28,7 @@ const getProfileByEmail = async (email) => {
   }
 };
 
-const addUser = async (payload) => {
+const addUsers = async (payload) => {
   try {
     const { email, password, fullname, nohp, role, username, photo, alamat } = payload;
     if (!(email && password && fullname && username)) {
@@ -45,7 +45,7 @@ const addUser = async (payload) => {
   }
 };
 
-const editProfile = async (payload, id) => {
+const editUsers = async (payload, id) => {
   try {
     const query = await db`UPDATE public."users" SET ${db(
       payload,
@@ -62,7 +62,7 @@ const editProfile = async (payload, id) => {
   }
 };
 
-const deleteProfile = async (id) => {
+const deleteUsers = async (id) => {
   try {
     const query = await db`DELETE FROM public."users" WHERE id = ${id} returning *`;
     return query;
@@ -71,7 +71,7 @@ const deleteProfile = async (id) => {
   }
 };
 
-const editPhotoUser = async (payload, id) => {
+const editPhotoUsers = async (payload, id) => {
   try {
     const query = await db`UPDATE public."users" set ${db(
       payload,
@@ -84,11 +84,11 @@ const editPhotoUser = async (payload, id) => {
 };
 
 module.exports = {
-  getAllUser,
-  getProfileById,
-  getProfileByEmail,
-  editProfile,
-  deleteProfile,
-  editPhotoUser,
-  addUser
+  getAllUsers,
+  getUsersById,
+  getUsersByEmail,
+  editUsers,
+  deleteUsers,
+  editPhotoUsers,
+  addUsers
 };
