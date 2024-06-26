@@ -2,7 +2,7 @@ const db = require("../connection");
 
 const getAllUser = async () => {
   try {
-    const query = db`SELECT * FROM public."user"`;
+    const query = db`SELECT * FROM public."users"`;
     return query;
   } catch (error) {
     return error;
@@ -11,7 +11,7 @@ const getAllUser = async () => {
 
 const getProfileById = async (id) => {
   try {
-    const query = await db`SELECT * FROM public."user" WHERE id = ${id}`;
+    const query = await db`SELECT * FROM public."users" WHERE id = ${id}`;
     return query;
   } catch (error) {
     return error;
@@ -21,7 +21,7 @@ const getProfileById = async (id) => {
 const getProfileByEmail = async (email) => {
   try {
     const query =
-      await db`SELECT * FROM public."user" WHERE LOWER(email) = LOWER(${email})`;
+      await db`SELECT * FROM public."users" WHERE LOWER(email) = LOWER(${email})`;
     return query;
   } catch (error) {
     return error;
@@ -29,29 +29,30 @@ const getProfileByEmail = async (email) => {
 };
 
 const addUser = async (payload) => {
-  const query = await db`INSERT INTO public."user"
-(email, "password", nama, nohp, role)
-VALUES(${payload.email}, ${payload.password},  ${payload.nama}, ${payload.nohp}, ${payload.role})`;
-  return query;
+  try {
+    const { email, password, fullname, nohp, role, username, photo, alamat } = payload;
+    if (!(email && password && fullname && username)) {
+      throw new Error("Bad input, please complete all fields");
+    }
+    const query = await db`INSERT INTO public.users
+      (email, password, fullname, nohp, role, username, photo, alamat)
+      VALUES (${email}, ${password}, ${fullname}, ${nohp}, ${role}, ${username}, ${photo}, ${alamat})
+      RETURNING *`;
+
+    return query;
+  } catch (error) {
+    throw error;
+  }
 };
 
 const editProfile = async (payload, id) => {
   try {
-    const query = await db`UPDATE public."user" SET ${db(
+    const query = await db`UPDATE public."users" SET ${db(
       payload,
       "email",
       "password",
-      "nama",
+      "fullname",
       "nohp",
-      "badko",
-      "cabang",
-      "komisariat",
-      "lk1",
-      "lk2",
-      "lk3",
-      "sc",
-      "lklembaga",
-      "lkkohati",
       "username",
       "role",
     )} WHERE id = ${id} returning *`;
@@ -63,7 +64,7 @@ const editProfile = async (payload, id) => {
 
 const deleteProfile = async (id) => {
   try {
-    const query = await db`DELETE FROM public."user" WHERE id = ${id} returning *`;
+    const query = await db`DELETE FROM public."users" WHERE id = ${id} returning *`;
     return query;
   } catch (error) {
     return error;
@@ -72,7 +73,7 @@ const deleteProfile = async (id) => {
 
 const editPhotoUser = async (payload, id) => {
   try {
-    const query = await db`UPDATE public."user" set ${db(
+    const query = await db`UPDATE public."users" set ${db(
       payload,
       "photo"
     )} WHERE id = ${id} returning *`;

@@ -60,49 +60,47 @@ async function loginUser(req, res) {
 
 async function insertUsers(req, res) {
   try {
-    const { email, password, nama, nohp, username } = req.body;
-    // validasi input
-    if (!(email && password && nama && nohp)) {
-      res.status(400).json({
-        status: false,
-        message: "Bad input, please complete all of fields",
-      });
-      return;
+    const { email, password, fullname, nohp, username, alamat, photo, role } = req.body;
+
+    // Pastikan minimal email, password, dan fullname terisi
+    if (!(email && username && password && fullname)) {
+      throw new Error("Email, password, and fullname are required");
     }
-    // check if email already exists in the database
-    const emailExists = await model.getProfileByEmail(email);
-    if (emailExists.length > 0) {
-      res.status(400).json({
-        status: false,
-        message: "Email already exists",
-      });
-      return;
-    }
-    const payload = {
-      email,
-      username,
-      password,
-      nama,
-      nohp,
-    };
+
+    // Hash password
     const salt = await bcrypt.genSalt(saltRounds);
     const hash = await bcrypt.hash(password, salt);
-    payload.password = hash;
-    const query = await model.insertProfile({ ...payload });
 
+    // Persiapkan payload untuk addUser
+    const payload = {
+      email,
+      password: hash,
+      fullname,
+      nohp,
+      username,
+      alamat,
+      photo,
+      role
+    };
+
+    // Tambahkan pengguna ke database
+    const query = await model.addUser(payload);
+
+    // Kirim respons berhasil
     res.json({
       status: true,
       message: "Success insert data",
       data: payload,
     });
   } catch (error) {
-    console.log(error);
-    res.status(500).json({
+    console.error(error); // Log error untuk debugging
+    res.status(400).json({
       status: false,
-      message: error,
+      message: error.message, // Kirim pesan error ke client
     });
   }
 }
+
 
 module.exports = {
   loginUser,
