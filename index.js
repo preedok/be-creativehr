@@ -29,15 +29,11 @@ app.use(
 const profileRoutes = require("./routes/profile.routes");
 const bukuRoutes = require("./routes/buku.routes");
 const authUser = require("./routes/auth.routes");
-const materiRoutes = require("./routes/materi.routes");
-const beritaRoutes = require("./routes/berita.routes");
 const kegiatanRoutes = require("./routes/kegiatan.routes");
 
 app.use(profileRoutes);
 app.use(bukuRoutes);
 app.use(authUser);
-app.use(materiRoutes);
-app.use(beritaRoutes);
 app.use(kegiatanRoutes);
 
 const port = process.env.PORT || 3000;

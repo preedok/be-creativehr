@@ -1,108 +1,140 @@
-const db = require("../connection");
-const model = require("../models/profile.models");
+const models = require("../models/auth.model");
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
 const jwt = require("jsonwebtoken");
 
-async function loginUser(req, res) {
+// async function loginUserByEmail(req, res) {
+//   try {
+//     const {
+//       body: { email, password },
+//     } = req;
+
+//     if (!(email && password)) {
+//       res.status(400).json({
+//         status: false,
+//         message: "Bad input",
+//       });
+//       return;
+//     }
+
+//     const checkEmail = await model.getProfileByEmail(email);
+//     if (!checkEmail?.length) {
+//       res.status(400).json({
+//         status: false,
+//         message: "Email Salah",
+//       });
+//       return;
+//     }
+
+//     // Load hash from your password DB.
+//     bcrypt.compare(password, checkEmail[0]?.password, function (err, result) {
+//       if (result) {
+//         const token = jwt.sign(
+//           { ...checkEmail[0], password: null },
+//           process.env.PRIVATE_KEY
+//         );
+
+//         res.json({
+//           status: true,
+//           message: "Get data success",
+//           data: checkEmail,
+//           token,
+//         });
+//       } else {
+//         res.status(400).json({
+//           status: false,
+//           message: "Password Salah",
+//         });
+//         return;
+//       }
+//     });
+//   } catch (error) {
+//     console.log(error);
+//     res.status(400).json({
+//       status: false,
+//       message: "Error not found",
+//     });
+//   }
+// }
+
+async function loginUserByUsername(req, res) {
   try {
     const {
-      body: { email, password },
+      body: { username, password },
     } = req;
-
-    if (!(email && password)) {
+    if (!(username && password)) {
       res.status(400).json({
         status: false,
         message: "Bad input",
       });
       return;
     }
-
-    const checkEmail = await model.getProfileByEmail(email);
-    if (!checkEmail?.length) {
+    const checkUser = await models.getProfileByUsername(username);
+    if (!checkUser?.length) {
       res.status(400).json({
         status: false,
-        message: "Email Salah",
+        message: "Username not found",
       });
       return;
     }
-
-    // Load hash from your password DB.
-    bcrypt.compare(password, checkEmail[0]?.password, function (err, result) {
+    bcrypt.compare(password, checkUser[0]?.password, function (err, result) {
       if (result) {
         const token = jwt.sign(
-          { ...checkEmail[0], password: null },
+          { ...checkUser[0], password: null },
           process.env.PRIVATE_KEY
         );
 
         res.json({
           status: true,
-          message: "Get data success",
-          data: checkEmail,
+          message: "Login successful",
+          data: checkUser,
           token,
         });
       } else {
         res.status(400).json({
           status: false,
-          message: "Password Salah",
+          message: "Incorrect password",
         });
-        return;
       }
     });
   } catch (error) {
     console.log(error);
     res.status(400).json({
       status: false,
-      message: "Error not found",
+      message: "Error occurred",
     });
   }
 }
 
-async function insertUsers(req, res) {
+async function registerUsers(req, res) {
   try {
-    const { email, password, fullname, nohp, username, alamat, photo, role } = req.body;
-
-    // Pastikan minimal email, password, dan fullname terisi
-    if (!(email && username && password && fullname)) {
+    const { password, fullname, username } = req.body;
+    if (!(username && password && fullname)) {
       throw new Error("Email, password, and fullname are required");
     }
-
-    // Hash password
     const salt = await bcrypt.genSalt(saltRounds);
     const hash = await bcrypt.hash(password, salt);
-
-    // Persiapkan payload untuk addUser
     const payload = {
-      email,
       password: hash,
       fullname,
-      nohp,
-      username,
-      alamat,
-      photo,
-      role
+      username
     };
-
-    // Tambahkan pengguna ke database
-    const query = await model.addUser(payload);
-
-    // Kirim respons berhasil
+    const query = await models.register(payload);
     res.json({
       status: true,
       message: "Success insert data",
       data: payload,
     });
   } catch (error) {
-    console.error(error); // Log error untuk debugging
+    console.error(error);
     res.status(400).json({
       status: false,
-      message: error.message, // Kirim pesan error ke client
+      message: error.message,
     });
   }
 }
 
-
 module.exports = {
-  loginUser,
-  insertUsers
+  loginUserByUsername,
+  registerUsers
 };
