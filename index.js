@@ -24,11 +24,13 @@ const profileRoutes = require("./routes/users.routes");
 const modulRoutes = require("./routes/modul.routes");
 const authUser = require("./routes/auth.routes");
 const kegiatanRoutes = require("./routes/kegiatan.routes");
+// const transaksiRoutes = require("./routes/transaksi.routes");
 
 app.use(profileRoutes);
 app.use(modulRoutes);
 app.use(authUser);
 app.use(kegiatanRoutes);
+// app.use(transaksiRoutes);
 
 const port = process.env.PORT || 3000;
 app.get("/", function (req, res) {
