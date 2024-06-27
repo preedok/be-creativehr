@@ -7,16 +7,11 @@ const register = async (payload) => {
             throw new Error("Bad input, please complete all fields");
         }
         const insertUserQuery = await db`INSERT INTO public.users
-            (fullname, username, password, email, photo, nohp, alamat, role)
-            VALUES (${fullname}, ${username}, ${password}, '', '', '', '', 'user')
+            (fullname, username, password, role)
+            VALUES (${fullname}, ${username}, ${password}, 'user')
             RETURNING id`;
-        const userId = insertUserQuery[0].id;
-        const insertAuthQuery = await db`INSERT INTO public.auth
-            (fullname, username, password, user_id)
-            VALUES (${fullname}, ${username}, ${password}, ${userId})
-            RETURNING *`;
 
-        return insertAuthQuery;
+        return insertUserQuery;
     } catch (error) {
         throw error;
     }
@@ -24,12 +19,13 @@ const register = async (payload) => {
 
 const getUsersByUsername = async (username) => {
     try {
-        const query = await db`SELECT * FROM public."users" WHERE LOWER(username) = LOWER(${username})`;
+        const query = await db`SELECT * FROM public.users WHERE LOWER(username) = LOWER(${username})`;
         return query;
     } catch (error) {
         return error;
     }
 };
+
 module.exports = {
     register,
     getUsersByUsername

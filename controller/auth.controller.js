@@ -3,59 +3,6 @@ const bcrypt = require("bcrypt");
 const saltRounds = 10;
 const jwt = require("jsonwebtoken");
 
-// async function loginUserByEmail(req, res) {
-//   try {
-//     const {
-//       body: { email, password },
-//     } = req;
-
-//     if (!(email && password)) {
-//       res.status(400).json({
-//         status: false,
-//         message: "Bad input",
-//       });
-//       return;
-//     }
-
-//     const checkEmail = await model.getProfileByEmail(email);
-//     if (!checkEmail?.length) {
-//       res.status(400).json({
-//         status: false,
-//         message: "Email Salah",
-//       });
-//       return;
-//     }
-
-//     // Load hash from your password DB.
-//     bcrypt.compare(password, checkEmail[0]?.password, function (err, result) {
-//       if (result) {
-//         const token = jwt.sign(
-//           { ...checkEmail[0], password: null },
-//           process.env.PRIVATE_KEY
-//         );
-
-//         res.json({
-//           status: true,
-//           message: "Get data success",
-//           data: checkEmail,
-//           token,
-//         });
-//       } else {
-//         res.status(400).json({
-//           status: false,
-//           message: "Password Salah",
-//         });
-//         return;
-//       }
-//     });
-//   } catch (error) {
-//     console.log(error);
-//     res.status(400).json({
-//       status: false,
-//       message: "Error not found",
-//     });
-//   }
-// }
 
 async function loginUsersByUsername(req, res) {
   try {
@@ -110,7 +57,7 @@ async function registerUsers(req, res) {
   try {
     const { password, fullname, username } = req.body;
     if (!(username && password && fullname)) {
-      throw new Error("Email, password, and fullname are required");
+      throw new Error("Username, password, and fullname are required");
     }
     const salt = await bcrypt.genSalt(saltRounds);
     const hash = await bcrypt.hash(password, salt);
@@ -133,6 +80,7 @@ async function registerUsers(req, res) {
     });
   }
 }
+
 
 module.exports = {
   loginUsersByUsername,
