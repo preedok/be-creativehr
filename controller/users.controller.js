@@ -246,7 +246,7 @@ async function editUsers(req, res) {
 
 async function deleteUsers(req, res) {
   try {
-    const { id } = req.params; 
+    const { id } = req.params;
 
     if (isNaN(id)) {
       res.status(400).json({
@@ -265,13 +265,14 @@ async function deleteUsers(req, res) {
       return;
     }
 
-    const query = await model.deleteUsers(id);
+    const result = await model.deleteUsers(id);
 
-    res.send({
-      status: true,
-      message: "Success delete data",
-      data: query,
-    });
+    if (!result.status) {
+      res.status(400).json(result); 
+      return;
+    }
+
+    res.send(result); 
   } catch (error) {
     console.error(error);
     res.status(500).json({
